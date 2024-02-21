@@ -15,13 +15,15 @@ import environ
 from pathlib import Path
 
 
-# Initialise environment variables
+# Get the root directory of your Django project
+root_dir = environ.Path(__file__) - 2  # Adjust the number if needed
+# Initialize environment variables
 env = environ.Env()
-environ.Env.read_env()
+# Load environment variables from .env file at the root of the project
+environ.Env.read_env(root_dir('.env'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -30,7 +32,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = env.bool('DEBUG', default=False)
+print('DEBUG', DEBUG)
+print('type(DEBUG)', type(DEBUG))
 
 ALLOWED_HOSTS = ['*']
 
