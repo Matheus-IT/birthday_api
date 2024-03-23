@@ -1,3 +1,4 @@
 from django.contrib import admin
+from api.models import Auth, Manager, Member
 
-# Register your models here.
+admin.site.register([Auth, Manager, Member])
