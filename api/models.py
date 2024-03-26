@@ -42,7 +42,6 @@ class Auth(AbstractBaseUser, PermissionsMixin):
     objects = AuthManager()
 
     email = models.EmailField(_('email address'), unique=True)
-    name = models.CharField(_('full name'), max_length=150, blank=True)
     is_active = models.BooleanField(_('active'), default=True)
     is_staff = models.BooleanField(
         _("staff status"),
