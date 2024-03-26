@@ -40,7 +40,7 @@ class Auth(AbstractBaseUser):
 
 class Member(models.Model):
     name = models.CharField(max_length=50)
-    profile_picture = models.ImageField()
+    profile_picture = models.ImageField(blank=True, null=True)
     phone_number = models.CharField(max_length=12)
     birth_date = models.DateField()
 
