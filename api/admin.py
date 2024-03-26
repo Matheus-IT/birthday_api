@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from api.models import Auth, Manager, Member
+from api.models import User, Manager, Member
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
@@ -13,7 +13,7 @@ class UserCreationForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Auth
+        model = User
         fields = ("email",)
 
     def clean_password2(self):
@@ -35,7 +35,7 @@ class UserChangeForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField()
 
     class Meta:
-        model = Auth
+        model = User
         fields = (
             "email",
             "password",
@@ -47,7 +47,7 @@ class UserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
-class AuthAdmin(UserAdmin):
+class UserAdmin(UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     list_display = ["email", "is_staff"]
@@ -72,6 +72,6 @@ class AuthAdmin(UserAdmin):
     ordering = ("email",)
 
 
-admin.site.register(Auth, AuthAdmin)
+admin.site.register(User, UserAdmin)
 
 admin.site.register([Manager, Member])
