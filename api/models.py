@@ -44,6 +44,9 @@ class Member(models.Model):
     phone_number = models.CharField(max_length=12)
     birth_date = models.DateField()
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class Manager(models.Model):
     member_info = models.OneToOneField(Member, on_delete=models.SET_NULL, null=True)
