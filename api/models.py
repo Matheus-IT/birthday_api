@@ -33,6 +33,8 @@ class Auth(AbstractBaseUser):
     objects = AuthManager()
 
     email = models.EmailField(unique=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.email
