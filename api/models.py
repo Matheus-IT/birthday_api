@@ -51,3 +51,6 @@ class Member(models.Model):
 class Manager(models.Model):
     member_info = models.OneToOneField(Member, on_delete=models.SET_NULL, null=True)
     auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f'{self.member_info.name} - {self.auth.email}'
