@@ -11,6 +11,8 @@ from rest_framework.decorators import (
     authentication_classes,
     permission_classes,
 )
+from api.models import Member
+from api.serializers import MemberSerializer
 
 
 class LoginView(APIView):
@@ -29,4 +31,6 @@ class LoginView(APIView):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def members_view(request):
-    return Response({"msg": "success"})
+    members = Member.objects.all()
+    serializer = MemberSerializer(members, many=True)
+    return Response(serializer.data)
