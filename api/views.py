@@ -13,6 +13,7 @@ from rest_framework.decorators import (
 )
 from api.models import Member
 from api.serializers import MemberSerializer
+from rest_framework.viewsets import ModelViewSet
 
 
 class LoginView(APIView):
@@ -34,3 +35,9 @@ def members_view(request):
     members = Member.objects.all()
     serializer = MemberSerializer(members, many=True)
     return Response(serializer.data)
+
+
+class MemberViewSet(ModelViewSet):
+    queryset = Member.objects.all()
+    serializer_class = MemberSerializer
+    permission_classes = [IsAuthenticated]
