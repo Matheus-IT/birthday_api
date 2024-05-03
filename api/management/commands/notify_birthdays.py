@@ -18,9 +18,6 @@ class Command(BaseCommand):
             birth_date__day=now.day, birth_date__month=now.month
         )
 
-        print("exists", birthday_people.exists())
-        print("birthday_people", birthday_people)
-
         if not birthday_people.exists():
             return
 
