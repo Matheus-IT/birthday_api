@@ -18,6 +18,9 @@ class Command(BaseCommand):
             birth_date__day=now.day, birth_date__month=now.month
         )
 
+        if not birthday_people.exists():
+            return
+
         notification_body = ""
 
         for p in birthday_people:
