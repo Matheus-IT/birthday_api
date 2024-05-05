@@ -63,7 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Member(models.Model):
     name = models.CharField(max_length=50)
     profile_picture = models.ImageField(blank=True, null=True)
-    phone_number = models.CharField(max_length=12)
+    phone_number = models.CharField(max_length=12, blank=True, null=True)
     birth_date = models.DateField()
 
     def __str__(self) -> str:
