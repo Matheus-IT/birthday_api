@@ -3,6 +3,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from api.models import Member
 from api.serializers import MemberSerializer
 from rest_framework.viewsets import ModelViewSet
@@ -24,3 +25,8 @@ class MemberViewSet(ModelViewSet):
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
     permission_classes = [IsAuthenticated]
+
+
+@api_view(["GET"])
+def birthdays_of_the_day(request):
+    return Response({"msg": "test"})
