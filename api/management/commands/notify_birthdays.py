@@ -21,14 +21,24 @@ class Command(BaseCommand):
         if not birthday_people.exists():
             return
 
-        notification_body = ""
+        birthday_people = birthday_people[:11]
 
-        for p in birthday_people:
-            notification_body += f"{p.name} \n"
+        notification_body = ""
+        n_of_people = len(birthday_people)
+
+        for i in range(n_of_people):
+            # if there's more than the maximum and this is the last, show "..."
+            if n_of_people > 10 and i == n_of_people - 1:
+                notification_body += "..."
+            else:
+                notification_body += f"- {birthday_people[i].name}"
+
+            if i < n_of_people - 1:
+                notification_body += "\n"
 
         message = messaging.Message(
             notification=messaging.Notification(
-                title="Aniversariantes do dia", body=notification_body
+                title="Aniversariantes do dia!", body=notification_body
             ),
             topic="birthdays-of-the-day",
         )
@@ -36,7 +46,6 @@ class Command(BaseCommand):
         try:
             # Send the message
             response = messaging.send(message)
-
             # Check the response for any errors
             print("Successfully sent message:", response)
         except Exception as e:
