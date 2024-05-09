@@ -37,9 +37,6 @@ def get_birthdays_of_the_day(request):
         birth_date__day=now.day, birth_date__month=now.month
     )
 
-    if not birthday_members.exists():
-        return Response({}, status=status.HTTP_404_NOT_FOUND)
-
     member_serializer = MemberSerializer(birthday_members, many=True)
 
     return Response({"birthday_members": member_serializer.data})

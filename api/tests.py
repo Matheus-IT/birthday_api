@@ -18,7 +18,9 @@ class GetBirthdaysOfTheDayTests(APITestCase):
         # when
         res = self.client.get(reverse("api:get_birthdays_of_the_day"))
         # then
-        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+        res_data = json.loads(res.content)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res_data["birthday_members"]), 0)
 
     def test_should_get_one_birthday_member(self):
         # given one member is having birthday today
