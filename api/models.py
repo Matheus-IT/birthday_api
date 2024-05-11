@@ -71,8 +71,12 @@ class Member(models.Model):
 
 
 class Manager(models.Model):
-    member_info = models.OneToOneField(Member, on_delete=models.SET_NULL, null=True)
+    member_info = models.OneToOneField(
+        Member, on_delete=models.SET_NULL, blank=True, null=True
+    )
     auth = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"{self.member_info.name} - {self.auth.email}"
+        if self.member_info:
+            return f"{self.member_info.name} - {self.auth.email}"
+        return self.auth.email
