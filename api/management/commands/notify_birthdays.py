@@ -4,6 +4,8 @@ import firebase_admin
 from firebase_admin import credentials, messaging
 from api.models import Member
 from datetime import datetime
+from django.core import mail
+from django.conf import settings
 
 
 class Command(BaseCommand):
@@ -38,6 +40,23 @@ class Command(BaseCommand):
             response = messaging.send(message)
             # Check the response for any errors
             print("Successfully sent message:", response)
+
+            birthday_people_names = [p.name.upper() for p in birthday_people]
+
+            email_message = (
+                f"Os aniversariantes do dia são: {', '.join(birthday_people_names)}"
+            )
+
+            recipient_list = config("EMAIL_RECIPIENT_LIST").split(",")
+
+            result = mail.send_mail(
+                "Aniversariantes do dia",
+                email_message,
+                settings.EMAIL_HOST_USER,
+                recipient_list,
+                fail_silently=False,
+            )
+            print("result", result)
         except Exception as e:
             print("Error", e)
 
