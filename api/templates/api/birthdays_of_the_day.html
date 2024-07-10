@@ -1,0 +1,33 @@
+{% load static %}
+
+<style>
+    .img-logo {
+        display: block;
+        width: 150px;
+        margin: auto;
+    }
+
+    .email-body {
+        max-width: 250px;
+        margin: auto;
+    }
+
+    .birthday-people {
+        width: fit-content;
+    }
+</style>
+
+<div class="email-body">
+    <img class="img-logo" src="{% static 'api/birthday-reminder-logo.png' %}" alt="Birthday reminder logo">
+
+    {% if birthday_people_names|length > 1 %}
+        <p>Os aniversariantes do dia são:</p>
+        <ul class="birthday-people">
+            {% for p in birthday_people_names %}
+                <li><strong>{{p}}</strong></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>O aniversariante de hoje é <strong>{{birthday_people_names.0}}</strong>!</p>
+    {% endif %}
+</div>

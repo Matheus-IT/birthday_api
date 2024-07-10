@@ -6,6 +6,7 @@ from api.models import Member
 from datetime import datetime
 from django.core import mail
 from django.conf import settings
+from django.template.loader import render_to_string
 
 
 class Command(BaseCommand):
@@ -41,19 +42,22 @@ class Command(BaseCommand):
             # Check the response for any errors
             print("Successfully sent message:", response)
 
-            birthday_people_names = [p.name.upper() for p in birthday_people]
-
-            email_message = (
-                f"Os aniversariantes do dia são: {', '.join(birthday_people_names)}"
+            recipient_list = config("EMAIL_RECIPIENT_LIST").split(",")
+            email_body = render_to_string(
+                "api/birthdays_of_the_day.html",
+                {"birthday_people_names": [p.name.upper() for p in birthday_people]},
             )
 
-            recipient_list = config("EMAIL_RECIPIENT_LIST").split(",")
-
             result = mail.send_mail(
-                "Aniversariantes do dia",
-                email_message,
-                settings.EMAIL_HOST_USER,
-                recipient_list,
+                (
+                    "Aniversariantes do dia"
+                    if len(birthday_people) > 1
+                    else "Aniversariante do dia"
+                ),
+                message='',
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=recipient_list,
+                html_message=email_body,
                 fail_silently=False,
             )
             print("result", result)

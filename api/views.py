@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.shortcuts import render
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
@@ -40,3 +41,16 @@ def get_birthdays_of_the_day(request):
     member_serializer = MemberSerializer(birthday_members, many=True)
 
     return Response({"birthday_members": member_serializer.data})
+
+
+def birthdays_of_the_day_test(request):
+    from collections import namedtuple
+
+    p = namedtuple("Person", ["name"])
+    birthday_people = [p("maria"), p("joão"), p("carlos")]
+    # birthday_people = [p("mario")]
+    return render(
+        request,
+        "api/birthdays_of_the_day.html",
+        {"birthday_people_names": [p.name.upper() for p in birthday_people]},
+    )
