@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from api.models import User, Manager, Member
+from api.models import User, Manager, Member, Department, Organization
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
@@ -74,4 +74,4 @@ class UserAdmin(UserAdmin):
 
 admin.site.register(User, UserAdmin)
 
-admin.site.register([Manager, Member])
+admin.site.register([Manager, Member, Department, Organization])

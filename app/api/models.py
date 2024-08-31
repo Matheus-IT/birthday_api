@@ -65,7 +65,7 @@ class Member(models.Model):
     profile_picture = models.ImageField(blank=True, null=True)
     phone_number = models.CharField(max_length=12, blank=True, null=True)
     birth_date = models.DateField()
-    department = models.ForeignKey('Department', on_delete=models.CASCADE, default=1)
+    department = models.ForeignKey('Department', on_delete=models.CASCADE, null=True)
 
     def __str__(self) -> str:
         return self.name
@@ -76,7 +76,7 @@ class Manager(models.Model):
         Member, on_delete=models.SET_NULL, blank=True, null=True
     )
     auth = models.OneToOneField(User, on_delete=models.CASCADE)
-    department = models.ForeignKey('Department', on_delete=models.CASCADE, default=1)
+    department = models.ForeignKey('Department', on_delete=models.CASCADE, null=True)
 
     def __str__(self) -> str:
         if self.member_info:
@@ -85,6 +85,14 @@ class Manager(models.Model):
 
 
 class Department(models.Model):
+    name = models.CharField(max_length=50)
+    organization = models.ForeignKey('Organization', on_delete=models.CASCADE, null=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class Organization(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self) -> str:
