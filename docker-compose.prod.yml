@@ -7,16 +7,17 @@ services:
     env_file:
       - .env
     command: "gunicorn -c gunicorn.prod.conf.py"
-    ports:
-      - 8000:8000
     volumes:
       - ./app:/app
 
   nginx:
-    image: nginx:1.27.1-alpine3.20
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
     container_name: nginx
     ports:
       - 80:80
+      - 443:443
     volumes:
       - ./app:/app
       - ./nginx.conf:/etc/nginx/nginx.conf
