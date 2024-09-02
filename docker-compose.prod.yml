@@ -19,6 +19,6 @@ services:
       - 80:80
     volumes:
       - ./app:/app
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - web
