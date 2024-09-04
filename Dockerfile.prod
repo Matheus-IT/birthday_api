@@ -5,7 +5,7 @@ WORKDIR /app
 # Set Python to run in unbuffered mode
 ENV PYTHONUNBUFFERED=1
 
-COPY requirements.prod.txt .
+COPY ./app/requirements.prod.txt .
 
 RUN pip install --no-cache-dir -r requirements.prod.txt
 
