@@ -1,3 +1,4 @@
+from io import StringIO
 from django.core.management.base import BaseCommand
 from decouple import config
 import firebase_admin
@@ -9,13 +10,15 @@ from django.conf import settings
 from django.template.loader import render_to_string
 
 
+cred = credentials.Certificate(config("FIREBASE_KEY_PATH"))
+firebase_admin.initialize_app(cred)
+
+
 class Command(BaseCommand):
     help = "Sends request to notify users on firebase"
 
     def handle(self, *args, **options):
-        cred = credentials.Certificate(config("FIREBASE_KEY_PATH"))
-        firebase_admin.initialize_app(cred)
-
+        print("called notify_birthdays command!")
         now = datetime.now()
         birthday_people = Member.objects.filter(
             birth_date__day=now.day, birth_date__month=now.month
@@ -54,7 +57,7 @@ class Command(BaseCommand):
                     if len(birthday_people) > 1
                     else "Aniversariante do dia"
                 ),
-                message='',
+                message="",
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=recipient_list,
                 html_message=email_body,

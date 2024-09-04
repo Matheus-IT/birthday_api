@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from decouple import config
 from pathlib import Path
+from celery.schedules import crontab, timedelta
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
+    "django_celery_results",
     "api.apps.ApiConfig",
 ]
 
@@ -143,7 +145,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
+# Notify via email
 EMAIL_BACKEND = config("EMAIL_BACKEND")
 EMAIL_HOST = config("EMAIL_HOST")
 EMAIL_PORT = config("EMAIL_PORT")
@@ -151,3 +153,23 @@ EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
 EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+
+# Celery settings
+CELERY_BROKER_URL = (
+    f"amqp://{config('RABBITMQ_USER')}:{config('RABBITMQ_PASS')}@broker:5672//"
+)
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_TIMEZONE = "America/Sao_Paulo"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
+
+CELERY_BEAT_SCHEDULE = {
+    "run-management-command-every-day": {
+        "task": "api.tasks.run_management_command",
+        "schedule": crontab(hour=8, minute=0),
+        # "schedule": timedelta(seconds=5),
+    },
+}
