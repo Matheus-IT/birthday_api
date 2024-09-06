@@ -9,6 +9,28 @@ services:
     command: "gunicorn -c gunicorn.prod.conf.py"
     volumes:
       - ./app:/app
+    depends_on:
+      - broker
+  
+  celery:
+    container_name: celery
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    command: "supervisord -c /home/appuser/supervisord/supervisord.conf"
+    env_file:
+      - .env
+    volumes:
+      - ./app:/app
+    depends_on:
+      - broker
+    
+  broker:
+    container_name: broker
+    image: rabbitmq:3.13.7-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=$RABBITMQ_USER
+      - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASS
 
   nginx:
     build:

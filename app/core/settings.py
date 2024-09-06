@@ -155,9 +155,7 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
 # Celery settings
-CELERY_BROKER_URL = (
-    f"amqp://{config('RABBITMQ_USER')}:{config('RABBITMQ_PASS')}@broker:5672//"
-)
+CELERY_BROKER_URL = f"amqp://{config('RABBITMQ_USER')}:{config('RABBITMQ_PASS')}@broker:{config('RABBITMQ_PORT')}//"
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_TIMEZONE = "America/Sao_Paulo"
 CELERY_TASK_TRACK_STARTED = True
@@ -166,9 +164,9 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
 CELERY_BEAT_SCHEDULE = {
-    "run-management-command-every-day": {
-        "task": "api.tasks.run_management_command",
-        "schedule": crontab(hour=8, minute=0),
-        # "schedule": timedelta(seconds=5),
+    "notify-birthdays-every-day": {
+        "task": "api.tasks.call_notify_birthdays",
+        # "schedule": crontab(hour=8, minute=0),
+        "schedule": timedelta(seconds=5),
     },
 }

@@ -9,10 +9,12 @@ services:
       - 8000:8000
     volumes:
       - ./app:/app
+    depends_on:
+      - broker
   
   broker:
     container_name: broker
     image: rabbitmq:3.13.7-alpine
     environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=password
+      - RABBITMQ_DEFAULT_USER=$RABBITMQ_USER
+      - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASS

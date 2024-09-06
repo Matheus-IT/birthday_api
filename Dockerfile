@@ -1,4 +1,4 @@
-FROM python:3.11-slim-buster
+FROM python:3.11-alpine3.20
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./app .
 
 # Create a non-root user
-RUN useradd --create-home appuser
+RUN adduser -D -h /home/appuser appuser
 
 # Change ownership of the application files
 RUN chown -R appuser:appuser /app

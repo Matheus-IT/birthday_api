@@ -18,7 +18,6 @@ class Command(BaseCommand):
     help = "Sends request to notify users on firebase"
 
     def handle(self, *args, **options):
-        print("called notify_birthdays command!")
         now = datetime.now()
         birthday_people = Member.objects.filter(
             birth_date__day=now.day, birth_date__month=now.month

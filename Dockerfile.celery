@@ -5,9 +5,9 @@ WORKDIR /app
 # Set Python to run in unbuffered mode
 ENV PYTHONUNBUFFERED=1
 
-COPY ./app/requirements.prod.txt .
+COPY ./app/requirements.txt .
 
-RUN pip install --no-cache-dir -r requirements.prod.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./app .
 
@@ -16,6 +16,15 @@ RUN adduser -D -h /home/appuser appuser
 
 # Change ownership of the application files
 RUN chown -R appuser:appuser /app
+
+# Setting up with supervisor
+RUN apk add --no-cache supervisor
+
+RUN mkdir /home/appuser/supervisord
+
+COPY ./supervisord.conf /home/appuser/supervisord/supervisord.conf
+
+RUN chown -R appuser:appuser /home/appuser/supervisord
 
 # Switch to the non-root user
 USER appuser

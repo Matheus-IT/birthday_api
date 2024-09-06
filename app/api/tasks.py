@@ -3,5 +3,6 @@ from django.core.management import call_command
 
 
 @shared_task
-def run_management_command():
-    call_command("notify_birthdays")
+def call_notify_birthdays():
+    print("call_notify_birthdays()!")
+    # call_command("notify_birthdays")
