@@ -2,7 +2,7 @@ FROM nginx:1.27.1-alpine3.20
 
 RUN apk update
 
-RUN apk add --no-cache openssl=3.3.1-r3
+RUN apk add --no-cache openssl=3.3.2-r0
 
 # Config to create self-signed key and certificate
 RUN mkdir -p /etc/nginx/ssl && \
