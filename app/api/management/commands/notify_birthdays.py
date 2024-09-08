@@ -11,10 +11,6 @@ from django.template.loader import render_to_string
 from api.services import notify_birthdays_service
 
 
-cred = credentials.Certificate(config("FIREBASE_KEY_PATH"))
-firebase_admin.initialize_app(cred)
-
-
 class Command(BaseCommand):
     help = "Sends request to notify users on firebase"
 

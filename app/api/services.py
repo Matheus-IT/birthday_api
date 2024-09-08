@@ -1,10 +1,14 @@
 from firebase_admin import credentials, messaging
-from api.models import Member
+from api.models import Member, Manager
 from datetime import datetime
 from django.core import mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from decouple import config
+import firebase_admin
+
+cred = credentials.Certificate(config("FIREBASE_KEY_PATH"))
+firebase_admin.initialize_app(cred)
 
 
 def notify_birthdays_service():
@@ -16,50 +20,35 @@ def notify_birthdays_service():
     if not birthday_people.exists():
         return
 
-    birthday_people_truncated = birthday_people[:11]
+    department_with_birthdays = birthday_people.values_list(
+        "department", flat=True
+    ).distinct()
 
-    notification_body = build_notification_body(birthday_people_truncated)
-    notification_title = build_notification_title(birthday_people_truncated)
+    for d in department_with_birthdays:
+        people_of_this_department = birthday_people.filter(department__id=d)
 
-    message = messaging.Message(
-        notification=messaging.Notification(
-            title=notification_title, body=notification_body
-        ),
-        topic="birthdays-of-the-day",
-    )
+        # birthday_people_truncated = people[:11]
 
-    try:
-        # Send the message
-        response = messaging.send(message)
-        # Check the response for any errors
-        print("Successfully sent message:", response)
+        # notification_body = build_notification_body(birthday_people_truncated)
+        # notification_title = build_notification_title(birthday_people_truncated)
 
-        recipient_list = config("EMAIL_RECIPIENT_LIST").split(",")
+        # message = messaging.Message(
+        #     notification=messaging.Notification(
+        #         title=notification_title, body=notification_body
+        #     ),
+        #     topic="birthdays-of-the-day",
+        # )
 
-        email_body = render_to_string(
-            "api/birthdays_of_the_day.html",
-            {
-                "birthday_people_names": [
-                    p.name.upper() for p in birthday_people_truncated
-                ]
-            },
-        )
+        try:
+            # Send the message
+            # response = messaging.send(message)
+            # Check the response for any errors
+            # print("Successfully sent message:", response)
 
-        result = mail.send_mail(
-            (
-                "Aniversariantes do dia"
-                if len(birthday_people_truncated) > 1
-                else "Aniversariante do dia"
-            ),
-            message="",
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=recipient_list,
-            html_message=email_body,
-            fail_silently=False,
-        )
-        print("result", result)
-    except Exception as e:
-        print("Error", e)
+            result = notify_via_email(people_of_this_department)
+            print("result", result)
+        except Exception as e:
+            print("Error", e)
 
 
 def get_recipient_list():
@@ -91,3 +80,33 @@ def build_notification_title(birthday_people):
         birthday_member = birthday_people[0]
         return f"O aniversariante do dia é {birthday_member.name.upper()}!"
     return "Aniversariantes do dia!"
+
+
+def notify_via_email(people):
+    department = people.first().department
+    birthday_people_truncated = people[:11]
+
+    recipient_list = Manager.objects.filter(department=department).values_list(
+        "auth__email", flat=True
+    )
+    if not recipient_list:
+        return 0
+
+    print("recipient_list", recipient_list)
+    email_body = render_to_string(
+        "api/birthdays_of_the_day.html",
+        {"birthday_people_names": [p.name.upper() for p in birthday_people_truncated]},
+    )
+    print("birthday_people_truncated", birthday_people_truncated)
+    return mail.send_mail(
+        (
+            "Aniversariantes do dia"
+            if len(birthday_people_truncated) > 1
+            else "Aniversariante do dia"
+        ),
+        message="",
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=recipient_list,
+        html_message=email_body,
+        fail_silently=False,
+    )
