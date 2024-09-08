@@ -170,7 +170,7 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_BEAT_SCHEDULE = {
     "notify-birthdays-every-day": {
         "task": "api.tasks.call_notify_birthdays",
-        # "schedule": crontab(hour=8, minute=0),
-        "schedule": timedelta(seconds=5),
+        "schedule": crontab(hour=8, minute=0),
+        # "schedule": timedelta(seconds=5),
     },
 }
