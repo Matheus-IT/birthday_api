@@ -7,6 +7,7 @@ from django.contrib.auth.models import (
 )
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django_prometheus.models import ExportModelOperationsMixin
 
 
 class UserManager(BaseUserManager):
@@ -60,12 +61,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-class Member(models.Model):
+class Member(ExportModelOperationsMixin("member"), models.Model):
     name = models.CharField(max_length=50)
     profile_picture = models.ImageField(blank=True, null=True)
     phone_number = models.CharField(max_length=12, blank=True, null=True)
     birth_date = models.DateField()
-    department = models.ForeignKey('Department', on_delete=models.CASCADE, null=True)
+    department = models.ForeignKey("Department", on_delete=models.CASCADE, null=True)
 
     def __str__(self) -> str:
         return self.name
@@ -76,7 +77,7 @@ class Manager(models.Model):
         Member, on_delete=models.SET_NULL, blank=True, null=True
     )
     auth = models.OneToOneField(User, on_delete=models.CASCADE)
-    department = models.ForeignKey('Department', on_delete=models.CASCADE, null=True)
+    department = models.ForeignKey("Department", on_delete=models.CASCADE, null=True)
 
     def __str__(self) -> str:
         if self.member_info:
@@ -86,7 +87,9 @@ class Manager(models.Model):
 
 class Department(models.Model):
     name = models.CharField(max_length=50)
-    organization = models.ForeignKey('Organization', on_delete=models.CASCADE, null=True)
+    organization = models.ForeignKey(
+        "Organization", on_delete=models.CASCADE, null=True
+    )
 
     def __str__(self) -> str:
         return self.name
