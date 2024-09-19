@@ -49,7 +49,9 @@ class MemberViewSet(ModelViewSet):
 def get_birthdays_of_the_day(request):
     now = datetime.now()
     birthday_members = Member.objects.filter(
-        birth_date__day=now.day, birth_date__month=now.month
+        birth_date__day=now.day,
+        birth_date__month=now.month,
+        department=request.user.manager.department,
     )
 
     member_serializer = MemberSerializer(birthday_members, many=True)
