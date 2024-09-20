@@ -101,3 +101,34 @@ class GetBirthdaysOfTheDayTests(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res_data["birthday_members"]), 1)
         self.assertEqual(res_data["birthday_members"][0]["name"], member1.name)
+
+
+class MemberViewSetTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create(email="test@test.com", password="12345678")
+        self.manager_department = Department.objects.create(
+            name="test department",
+            organization=Organization.objects.create(
+                name="test organization",
+            ),
+        )
+        Manager.objects.create(
+            auth=self.user,
+            department=self.manager_department,
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_should_create_member_with_department_of_manager(self):
+        # given
+        payload = {
+            "name": "test member",
+            "profile_picture": "",
+            "phone_number": "12345678910",
+            "birth_date": "2024-05-05",
+        }
+        # when
+        res = self.client.post(reverse("api:member-list"), data=payload)
+        # then
+        res_data = res.json()
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(res_data["department"], self.manager_department.pk)
