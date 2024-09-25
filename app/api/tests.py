@@ -132,3 +132,22 @@ class MemberViewSetTests(APITestCase):
         res_data = res.json()
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(res_data["department"], self.manager_department.pk)
+
+    def test_should_succeed_when_manager_delete_member_of_his_department(self):
+        # given
+        m = Member.objects.create(
+            name="test1",
+            profile_picture="",
+            phone_number="1345678910",
+            birth_date=datetime(
+                day=10,
+                month=10,
+                year=1990,
+            ),
+            department=self.manager_department,
+        )
+        # when
+        res = self.client.delete(reverse("api:member-detail", kwargs={'pk': m.id}))
+        # then
+        self.assertEqual(res.status_code, 204)
+        self.assertFalse(Member.objects.filter(id=m.id).exists())
