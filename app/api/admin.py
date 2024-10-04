@@ -72,6 +72,11 @@ class UserAdmin(UserAdmin):
     ordering = ("email",)
 
 
-admin.site.register(User, UserAdmin)
+class MemberAdmin(admin.ModelAdmin):
+    list_display = ["name", "birth_date", "department"]
+    list_filter = ["birth_date", "department"]
 
-admin.site.register([Manager, Member, Department, Organization])
+
+admin.site.register(User, UserAdmin)
+admin.site.register(Member, MemberAdmin)
+admin.site.register([Manager, Department, Organization])

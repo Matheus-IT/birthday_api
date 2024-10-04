@@ -16,6 +16,7 @@ def notify_birthdays_service():
     birthday_people = Member.objects.filter(
         birth_date__day=now.day, birth_date__month=now.month
     )
+    print("birthday_people", birthday_people)
 
     if not birthday_people.exists():
         return
@@ -49,11 +50,6 @@ def notify_birthdays_service():
             print("result", result)
         except Exception as e:
             print("Error", e)
-
-
-def get_recipient_list():
-    # return config("EMAIL_RECIPIENT_LIST").split(",")
-    pass
 
 
 def build_notification_body(birthday_people):

@@ -147,7 +147,7 @@ class MemberViewSetTests(APITestCase):
             department=self.manager_department,
         )
         # when
-        res = self.client.delete(reverse("api:member-detail", kwargs={'pk': m.id}))
+        res = self.client.delete(reverse("api:member-detail", kwargs={"pk": m.id}))
         # then
         self.assertEqual(res.status_code, 204)
         self.assertFalse(Member.objects.filter(id=m.id).exists())
