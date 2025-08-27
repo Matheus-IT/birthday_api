@@ -159,7 +159,7 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
 # Celery settings
-CELERY_BROKER_URL = f"amqp://{config('RABBITMQ_USER')}:{config('RABBITMQ_PASS')}@broker:{config('RABBITMQ_PORT')}//"
+CELERY_BROKER_URL = f"amqp://{config('RABBITMQ_USER', default='rabbitmquser')}:{config('RABBITMQ_PASS', default='password123')}@broker:{config('RABBITMQ_PORT', default='5672')}//"
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_TIMEZONE = "America/Sao_Paulo"
 CELERY_TASK_TRACK_STARTED = True
