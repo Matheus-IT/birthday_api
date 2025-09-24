@@ -1,18 +1,16 @@
-from firebase_admin import credentials, messaging
+
 from api.models import Member, Manager
 from datetime import datetime
 from django.core import mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from decouple import config
-import firebase_admin
-
-cred = credentials.Certificate(config("FIREBASE_KEY_PATH"))
-firebase_admin.initialize_app(cred)
 
 
 def notify_birthdays_service():
+    print('notify_birthdays()')
     now = datetime.now()
+    print('now is', now)
     birthday_people = Member.objects.filter(
         birth_date__day=now.day, birth_date__month=now.month
     )

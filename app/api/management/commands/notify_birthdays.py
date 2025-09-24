@@ -1,8 +1,6 @@
 from io import StringIO
 from django.core.management.base import BaseCommand
 from decouple import config
-import firebase_admin
-from firebase_admin import credentials, messaging
 from api.models import Member
 from datetime import datetime
 from django.core import mail
