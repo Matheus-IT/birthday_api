@@ -47,6 +47,7 @@ class MemberViewSet(ModelViewSet):
 
         manager_department = request.user.manager.department
         queryset = queryset.filter(department=manager_department)
+        queryset = self._sort_by_birth_date(queryset)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -55,6 +56,21 @@ class MemberViewSet(ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    
+    def _sort_by_birth_date(self, queryset):
+        """
+        Sort members by birth date (month and day), so the ones with upcoming birthdays appear first.
+        And if the birthday already happened this year, it should appear at the end of the list.
+        """
+        now = datetime.now().date()
+
+        for m in queryset:
+            days_for_birthday = (m.birth_date.replace(year=now.year) - now).days
+            if days_for_birthday < 0:
+                days_for_birthday += 365  # Consider next year if birthday already happened
+            m.days_for_birthday = days_for_birthday
+
+        return sorted(queryset, key=lambda m: m.days_for_birthday)
 
 
 @api_view(["GET"])
