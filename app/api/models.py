@@ -69,6 +69,10 @@ class Member(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+    def is_birthday_today(self):
+        today = timezone.now().date()
+        return self.birth_date.month == today.month and self.birth_date.day == today.day
 
 
 class Manager(models.Model):
