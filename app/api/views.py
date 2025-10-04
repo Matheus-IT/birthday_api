@@ -11,6 +11,8 @@ from api.serializers import MemberSerializer
 from rest_framework.viewsets import ModelViewSet
 from datetime import datetime
 
+from api.pagination import DefaultPagination
+
 
 class LoginView(APIView):
     def post(self, request):
@@ -28,6 +30,7 @@ class MemberViewSet(ModelViewSet):
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = DefaultPagination
 
     def create(self, request, *args, **kwargs):
         # Member will have the same department as the manager's
