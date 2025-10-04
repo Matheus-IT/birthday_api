@@ -49,6 +49,9 @@ class MemberViewSet(ModelViewSet):
         queryset = self.get_queryset()
 
         manager_department = request.user.manager.department
+        search = request.query_params.get("search")
+        if search:
+            queryset = queryset.filter(name__icontains=search)
         queryset = queryset.filter(department=manager_department)
         queryset = self._sort_by_birth_date(queryset)
 
